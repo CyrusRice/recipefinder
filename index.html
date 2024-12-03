@@ -3,6 +3,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.js"
+    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous">
+  </script>
+  <script src="./app.js" defer></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,8 +19,9 @@
     <li class="spaghetti"><img src="img/spaghetti.png" alt="picture of burger"></li>
   </ul>
   <h1>Recipe Finder</h1>
-  <p>Use this website to find recipes based on your desired ingredients</p>
-  <form>
+  <p id="description">Use this website to find recipes based on your desired ingredients</p>
+  <!--Forum hidden when user submits search to show results-->
+  <form id="ingredients">
     <input type="text" id="ingredient-1" name="ingredient-1" placeholder="ingredient 1">
     <br><br>
     <input type="text" id="ingredient-2" name="ingredient-2" placeholder="ingredient 2">
@@ -26,5 +33,23 @@
 
     <input type="submit" value="Find Recipes">
   </form>
+
+  <!-- Code for list of items created when user submits search
+  <div class="container">
+    <div class="item item-1">
+      <p>food title</p>
+      <img src="www.somewebsite.com" alt="food image">
+    </div>
+    <div class="item item-2">2</div>
+    <div class="item item-3">3</div>
+    <div class="item item-4">4</div>
+    <div class="item item-5">5</div>
+    <div class="item item-6">6</div>
+    <div class="item item-7">7</div>
+    <div class="item item-8">8</div>
+    <div class="item item-9">9</div>
+    <div class="item item-10">10</div>
+  </div>
+  -->
 </body>
 </html>

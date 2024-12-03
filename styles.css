@@ -67,6 +67,20 @@ form input[type="submit"]:hover {
   height: 100%;
 }
 
+.container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 20px;
+}
+
+.item {
+  background-color: red;
+  border: 1px solid white;
+  display: grid;
+  grid-template-columns: auto;
+  justify-content: center;
+}
+
 @media screen and (max-width: 750px){
 
   li.pancakes{
