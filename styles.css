@@ -69,22 +69,51 @@ form input[type="submit"]:hover {
 
 .container {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto auto;
   gap: 20px;
 }
 
 .item {
-  background-color: red;
-  border: 1px solid white;
+  background-color: white;
+  border: 3px solid lightseagreen;
+  border-radius: 20px;
   display: grid;
   grid-template-columns: auto;
-  justify-content: center;
+  text-align: center;
+}
+
+.item:hover {
+  position: relative;
+  top: -4px;
+}
+
+.title {
+  color: lightseagreen;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-bottom-left-radius: 17px;
+  border-bottom-right-radius: 17px;
+}
+
+@media screen and (max-width: 1100px) {
+  .container {
+    grid-template-columns: auto auto auto;
+  }
 }
 
 @media screen and (max-width: 750px){
 
   li.pancakes{
     display: none;
+  }
+
+  .container {
+    grid-template-columns: auto auto;
   }
 }
 
@@ -105,5 +134,9 @@ form input[type="submit"]:hover {
   }
   form input[type="text"] {
     width: 80%;
+  }
+
+  .container {
+    grid-template-columns: auto;
   }
 }
