@@ -80,6 +80,7 @@ form input[type="submit"]:hover {
   display: grid;
   grid-template-columns: auto;
   text-align: center;
+  cursor: pointer;
 }
 
 .item:hover {
