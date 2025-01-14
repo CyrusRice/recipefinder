@@ -101,6 +101,26 @@ form input[type="submit"]:hover {
   border-bottom-right-radius: 17px;
 }
 
+.recipe {
+  text-align: center;
+  font-weight: bold;
+  width:min-content;
+  margin: auto;
+}
+
+#recipe-img {
+  border-radius: 17px;
+  float: none;
+}
+
+.recipe-container, .ingred-container {
+  display: inline-block;
+}
+
+.recipe-instruction, .ingred-item {
+  text-align: left;
+}
+
 @media screen and (max-width: 1100px) {
   .container {
     grid-template-columns: auto auto auto;

@@ -16,17 +16,14 @@ ingredForm?.addEventListener('submit', function(e) {
 
       //document.getElementById("ingredients").style.visibility = "hidden";
       document.getElementById("ingredients").remove();
+      document.getElementById("description").remove();
 
       // Create Div container
       const container = document.createElement("div");
       container.className = "container";
       container.id = "container";
 
-      document.getElementById("description").insertAdjacentElement("afterend", container);
-
-      document.getElementById("description").addEventListener("click", () => {
-        console.log("Inner button clicked");
-      });
+      document.getElementById("website-title").insertAdjacentElement("afterend", container);
 
       // Create Div element and insert title and image for each result
       for (let i = 0; i < data.results.length; i++) {
@@ -67,14 +64,80 @@ const showRecipe = function(e, data) {
   e.preventDefault();
   document.getElementById("container").remove();
   $.ajax(`https://api.spoonacular.com/recipes/${data}/information?apiKey=64bf1bceb4104664bbdfc0c611b195f6`).then((recipe) => {
-    console.log(recipe.title);
+    const recipe_container = document.createElement("div");
+    recipe_container.className = "recipe";
+    //console.log(recipe);
+    //console.log(recipe.extendedIngredients[0].original);
+    //console.log(recipe.instructions);
+    //console.log(recipe.analyzedInstructions[0].steps[0].step);
+    const recipe_title = document.createElement("p");
+    recipe_title.id = "recipe-title";
+    const recipe_title_text = document.createTextNode(recipe.title);
+    recipe_title.appendChild(recipe_title_text);
+
+    const recipe_img = document.createElement("img");
+    recipe_img.id = "recipe-img";
+    recipe_img.src = recipe.image;
+
+    recipe_container.appendChild(recipe_title);
+    recipe_container.appendChild(recipe_img);
+
+    const ingred_title = document.createElement("p");
+    const ingred_title_text = document.createTextNode("Ingredients");
+    ingred_title.appendChild(ingred_title_text);
+
+    recipe_container.appendChild(ingred_title);
+
+    const ingred_container = document.createElement("ul");
+    ingred_container.id = "ingred-container";
+    const ingredients = recipe.extendedIngredients;
+
+    for (let i = 0; i < ingredients.length; i++) {
+      const ingred_div = document.createElement("li");
+      ingred_div.className = "ingred-item";
+      const ingred_text = document.createTextNode(ingredients[i].original);
+      ingred_div.appendChild(ingred_text);
+      ingred_container.appendChild(ingred_div);
+    }
+    recipe_container.appendChild(ingred_container);
+
+    //const recipe_instructions = document.createElement("p");
+    //recipe_instructions.id = "recipe-instructions";
+    //const recipe_instructions_text = document.createTextNode(recipe.instructions);
+    //var test = recipe_instructions_text.textContent;
+    //const regex = /<ol>|<\/ol>|<li>|<\/li>/gi;
+    //test = test.replaceAll(regex, "");
+    //const instructions = test.split(".");
+    const instruction_title = document.createElement("p");
+    const instruction_title_text = document.createTextNode("Instructions");
+    instruction_title.appendChild(instruction_title_text);
+
+    recipe_container.appendChild(instruction_title);
+
+    const instruction_container = document.createElement("ul");
+    instruction_container.id = "recipe-container";
+    const instructions = recipe.analyzedInstructions[0].steps;
+
+    for (let i = 0; i < instructions.length - 1; i++) {
+      const instruction_div = document.createElement("li");
+      instruction_div.className = "recipe-instruction";
+      const instruction_text = document.createTextNode(instructions[i].step);
+      instruction_div.appendChild(instruction_text);
+      instruction_container.appendChild(instruction_div);
+      //recipe_container.appendChild(instruction_div);
+    }
+    recipe_container.appendChild(instruction_container);
+    //console.log(instructions);
+    //recipe_instructions.appendChild(recipe_instructions_text);
+
+    document.getElementById("website-title").insertAdjacentElement("afterend", recipe_container);
+    /*console.log(recipe.title);
     console.log(recipe.image);
     for (let i = 0; i < recipe.extendedIngredients.length; i++) {
       let currentIngred = recipe.extendedIngredients[i];
       console.log(currentIngred.nameClean + " (" + currentIngred.amount + " " + currentIngred.unit + ")");
     }
-    console.log(recipe.instructions);
+    console.log(recipe.instructions);*/
   })
 }
-// Get event listener for divs working (right now it doesn't wait for click, just displays recipe) (the problem seems to be
-// creating the div in the current event listener, as already made elements work)
+// Make recipe page responsive. Then add back links.
