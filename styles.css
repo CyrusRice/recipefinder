@@ -105,12 +105,14 @@ form input[type="submit"]:hover {
   text-align: center;
   font-weight: bold;
   width:min-content;
+  max-width: 100%;
   margin: auto;
 }
 
 #recipe-img {
   border-radius: 17px;
   float: none;
+  max-width: 90vw;
 }
 
 .recipe-container, .ingred-container {
