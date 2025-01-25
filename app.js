@@ -1,11 +1,7 @@
 const ingredForm = document.forms['ingredients']
 
-ingredForm?.addEventListener('submit', function(e) {
+const search = function(e, ingred1, ingred2, ingred3, ingred4) {
   e.preventDefault();
-  const ingred1 = ingredForm.querySelector('input[id="ingredient-1"]').value;
-  const ingred2 = ingredForm.querySelector('input[id="ingredient-2"]').value;
-  const ingred3 = ingredForm.querySelector('input[id="ingredient-3"]').value;
-  const ingred4 = ingredForm.querySelector('input[id="ingredient-4"]').value;
   //includeIngredients=${ingred1},+${ingred2},+${ingred3},+${ingred4}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6
   $.ajax(`https://api.spoonacular.com/recipes/complexSearch?includeIngredients=${ingred1},+${ingred2},+${ingred3},+${ingred4}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6`)
     .then((data) => {
@@ -15,15 +11,31 @@ ingredForm?.addEventListener('submit', function(e) {
       //window.location.href = "searchResults.html";
 
       //document.getElementById("ingredients").style.visibility = "hidden";
-      document.getElementById("ingredients").remove();
-      document.getElementById("description").remove();
+      document.getElementById("ingredients")?.remove();
+      document.getElementById("description")?.remove();
+      document.getElementsByClassName("recipe")[0]?.remove();
+      const results_link = document.getElementById("results-link");
+      if (typeof(results_link) != 'undefined' && results_link != null) {
+        results_link.style.display = "none";
+      }
+
+      // Link to return back home
+      const home_link = document.getElementById("home-link");
+      if (typeof(home_link) == 'undefined' || home_link == null) {
+        const home = document.createElement("a");
+        home.href = "index.html";
+        home.textContent = "Back to search";
+        home.id = "home-link";
+  
+        document.getElementById("website-title").insertAdjacentElement("afterend", home);
+      }
 
       // Create Div container
       const container = document.createElement("div");
       container.className = "container";
       container.id = "container";
 
-      document.getElementById("website-title").insertAdjacentElement("afterend", container);
+      document.getElementById("home-link").insertAdjacentElement("afterend", container);
 
       // Create Div element and insert title and image for each result
       for (let i = 0; i < data.results.length; i++) {
@@ -48,7 +60,19 @@ ingredForm?.addEventListener('submit', function(e) {
         container.appendChild(div);
       }
   })
-})
+}
+
+ingredForm?.addEventListener('submit', function(e) {
+  const ingred1 = ingredForm.querySelector('input[id="ingredient-1"]').value;
+  const ingred2 = ingredForm.querySelector('input[id="ingredient-2"]').value;
+  const ingred3 = ingredForm.querySelector('input[id="ingredient-3"]').value;
+  const ingred4 = ingredForm.querySelector('input[id="ingredient-4"]').value;
+  sessionStorage.setItem('ingred1', ingred1);
+  sessionStorage.setItem('ingred2', ingred2);
+  sessionStorage.setItem('ingred3', ingred3);
+  sessionStorage.setItem('ingred4', ingred4);
+  search(e, ingred1, ingred2, ingred3, ingred4);
+});
 
 document.addEventListener("click", function(e){
   //const target = e.target.closest("#btnPrepend"); // Or any other selector.
@@ -57,6 +81,13 @@ document.addEventListener("click", function(e){
     // Do something with `target`.
     //console.log(document.getElementsByClassName(e.target.className)[0].closest(".item").id);
     showRecipe(e, document.getElementsByClassName(e.target.className)[0].closest(".item").id);
+  } else if (e.target && e.target.id == "results-link") {
+    e.target.style.color = "purple";
+    let ingred1 = sessionStorage.getItem('ingred1');
+    let ingred2 = sessionStorage.getItem('ingred2');
+    let ingred3 = sessionStorage.getItem('ingred3');
+    let ingred4 = sessionStorage.getItem('ingred4');
+    search(e, ingred1, ingred2, ingred3, ingred4);
   }
 });
 
@@ -130,7 +161,18 @@ const showRecipe = function(e, data) {
     //console.log(instructions);
     //recipe_instructions.appendChild(recipe_instructions_text);
 
-    document.getElementById("website-title").insertAdjacentElement("afterend", recipe_container);
+    // Link to return back to results
+    var results_link = document.getElementById("results-link");
+    if (typeof(results_link) != 'undefined' && results_link != null) {
+        results_link.style.display = "block";
+    } else {
+      results_link = document.createElement("div");
+      results_link.textContent = "Back to results";
+      results_link.id = "results-link";
+      document.getElementById("home-link").insertAdjacentElement("beforeBegin", results_link);
+    }
+
+    document.getElementById("home-link").insertAdjacentElement("afterend", recipe_container);
     /*console.log(recipe.title);
     console.log(recipe.image);
     for (let i = 0; i < recipe.extendedIngredients.length; i++) {
@@ -140,4 +182,5 @@ const showRecipe = function(e, data) {
     console.log(recipe.instructions);*/
   })
 }
-// Make recipe page responsive. Then add back links.
+// Fix back to search link to turn purple after its been clicked
+// (currently can't get it to disappear)

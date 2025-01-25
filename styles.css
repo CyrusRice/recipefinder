@@ -10,6 +10,17 @@ p {
   text-align: center;
   color: lightseagreen;
 }
+#home-link {
+  margin-bottom: 10px;
+}
+a, #results-link {
+  width: fit-content;
+  margin: auto;
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: underline;
+}
 form {
   text-align: center;
 }
@@ -31,6 +42,7 @@ form input[type="text"]:hover {
 }
 form input[type="submit"] {
   border: 3px solid lightseagreen;
+  cursor: pointer;
 }
 form input[type="submit"]:hover {
   background-color: lightseagreen;
@@ -113,10 +125,6 @@ form input[type="submit"]:hover {
   border-radius: 17px;
   float: none;
   max-width: 90vw;
-}
-
-.recipe-container, .ingred-container {
-  display: inline-block;
 }
 
 .recipe-instruction, .ingred-item {
