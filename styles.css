@@ -40,11 +40,11 @@ form input[type="text"]:hover {
   position: relative;
   top: -4px;
 }
-form input[type="submit"] {
+form input[type="submit"], form input[type="button"] {
   border: 3px solid lightseagreen;
   cursor: pointer;
 }
-form input[type="submit"]:hover {
+form input[type="submit"]:hover, form input[type="button"]:hover {
   background-color: lightseagreen;
   border: 3px solid white;
   color: white;

@@ -1,9 +1,17 @@
 const ingredForm = document.forms['ingredients']
 
-const search = function(e, ingred1, ingred2, ingred3, ingred4) {
+const search = function(e, ingredients) {
   e.preventDefault();
+  let includeIngredients = "";
+  const num_ingred = sessionStorage.getItem('num_ingred');
+  for (let i = 0; i < num_ingred; i++) {
+    const ingred = sessionStorage.getItem('ingred' + i);
+    if (ingred != "") {
+      includeIngredients += sessionStorage.getItem('ingred' + i) + ",+";
+    }
+  }
   //includeIngredients=${ingred1},+${ingred2},+${ingred3},+${ingred4}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6
-  $.ajax(`https://api.spoonacular.com/recipes/complexSearch?includeIngredients=${ingred1},+${ingred2},+${ingred3},+${ingred4}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6`)
+  $.ajax(`https://api.spoonacular.com/recipes/complexSearch?includeIngredients=${includeIngredients}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6`)
     .then((data) => {
       //console.log(data.results[0].title);
       //console.log(data.results[0].image);
@@ -61,17 +69,26 @@ const search = function(e, ingred1, ingred2, ingred3, ingred4) {
       }
   })
 }
+const button = document.getElementById("add-ingredient");
+button.addEventListener('click', function(e) {
+  // When add ingred + button clicked, add ingred input to form
+});
 
 ingredForm?.addEventListener('submit', function(e) {
-  const ingred1 = ingredForm.querySelector('input[id="ingredient-1"]').value;
+  const ingredients = ingredForm.getElementsByClassName("ingredient");
+  sessionStorage.setItem('num_ingred', ingredients.length);
+  for (let i = 0; i < ingredients.length; i++) {
+    sessionStorage.setItem('ingred' + i, ingredients[i].value);
+  }
+  /*const ingred1 = ingredForm.querySelector('input[id="ingredient-1"]').value;
   const ingred2 = ingredForm.querySelector('input[id="ingredient-2"]').value;
   const ingred3 = ingredForm.querySelector('input[id="ingredient-3"]').value;
   const ingred4 = ingredForm.querySelector('input[id="ingredient-4"]').value;
   sessionStorage.setItem('ingred1', ingred1);
   sessionStorage.setItem('ingred2', ingred2);
   sessionStorage.setItem('ingred3', ingred3);
-  sessionStorage.setItem('ingred4', ingred4);
-  search(e, ingred1, ingred2, ingred3, ingred4);
+  sessionStorage.setItem('ingred4', ingred4);*/
+  search(e, ingredients);
 });
 
 document.addEventListener("click", function(e){
@@ -83,11 +100,25 @@ document.addEventListener("click", function(e){
     showRecipe(e, document.getElementsByClassName(e.target.className)[0].closest(".item").id);
   } else if (e.target && e.target.id == "results-link") {
     e.target.style.color = "purple";
-    let ingred1 = sessionStorage.getItem('ingred1');
+    const ingredients = [];
+    for (let i = 0; i < sessionStorage.getItem('num_ingred'); i++) {
+      ingredients.push(sessionStorage.getItem('ingred' + i));
+    }
+    /*let ingred1 = sessionStorage.getItem('ingred1');
     let ingred2 = sessionStorage.getItem('ingred2');
     let ingred3 = sessionStorage.getItem('ingred3');
-    let ingred4 = sessionStorage.getItem('ingred4');
-    search(e, ingred1, ingred2, ingred3, ingred4);
+    let ingred4 = sessionStorage.getItem('ingred4');*/
+    search(e, ingredients);
+  } else if (e.target && e.target.id == "add-ingredient") {
+    const ingred_arr = document.getElementsByClassName("ingredient");
+    console.log(ingred_arr[4]);
+    const new_ingred = document.createElement("input");
+    new_ingred.type = "text";
+    new_ingred.className = "ingredient";
+    new_ingred.id = "ingredient-" + (ingred_arr.length + 1);
+    new_ingred.placeholder = "ingredient " + (ingred_arr.length + 1);
+    ingred_arr[ingred_arr.length - 1].insertAdjacentElement("afterend", new_ingred);
+    ingred_arr[ingred_arr.length - 2].insertAdjacentHTML("afterend", "<br><br>");
   }
 });
 
@@ -182,5 +213,4 @@ const showRecipe = function(e, data) {
     console.log(recipe.instructions);*/
   })
 }
-// Fix back to search link to turn purple after its been clicked
-// (currently can't get it to disappear)
+// Add ability to switch between search by ingreds and recipe name
