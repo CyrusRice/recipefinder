@@ -1,17 +1,25 @@
-const ingredForm = document.forms['ingredients']
+const ingredForm = document.forms['ingredients'];
+sessionStorage.setItem('search_type', 0);
 
-const search = function(e, ingredients) {
+const search = function(e) {
   e.preventDefault();
-  let includeIngredients = "";
-  const num_ingred = sessionStorage.getItem('num_ingred');
-  for (let i = 0; i < num_ingred; i++) {
-    const ingred = sessionStorage.getItem('ingred' + i);
-    if (ingred != "") {
-      includeIngredients += sessionStorage.getItem('ingred' + i) + ",+";
+
+  if (sessionStorage.getItem('search_type') == 0) {
+    let includeIngredients = "";
+    const num_ingred = sessionStorage.getItem('num_ingred');
+    for (let i = 0; i < num_ingred; i++) {
+      const ingred = sessionStorage.getItem('ingred' + i);
+      if (ingred != "") {
+        includeIngredients += sessionStorage.getItem('ingred' + i) + ",+";
+      }
     }
+    api_call = `includeIngredients=${includeIngredients}`;
+  } else {
+    const recipe_name = sessionStorage.getItem('recipe-name');
+    api_call = `titleMatch=${recipe_name}`;
   }
   //includeIngredients=${ingred1},+${ingred2},+${ingred3},+${ingred4}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6
-  $.ajax(`https://api.spoonacular.com/recipes/complexSearch?includeIngredients=${includeIngredients}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6`)
+  $.ajax(`https://api.spoonacular.com/recipes/complexSearch?${api_call}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6`)
     .then((data) => {
       //console.log(data.results[0].title);
       //console.log(data.results[0].image);
@@ -75,10 +83,15 @@ button.addEventListener('click', function(e) {
 });
 
 ingredForm?.addEventListener('submit', function(e) {
-  const ingredients = ingredForm.getElementsByClassName("ingredient");
-  sessionStorage.setItem('num_ingred', ingredients.length);
-  for (let i = 0; i < ingredients.length; i++) {
-    sessionStorage.setItem('ingred' + i, ingredients[i].value);
+  if (sessionStorage.getItem('search_type') == 0) {
+    const ingredients = ingredForm.getElementsByClassName("ingredient");
+    sessionStorage.setItem('num_ingred', ingredients.length);
+    for (let i = 0; i < ingredients.length; i++) {
+      sessionStorage.setItem('ingred' + i, ingredients[i].value);
+    }
+  } else {
+    const recipe_name = document.getElementById("recipe-name").value;
+    sessionStorage.setItem('recipe-name', recipe_name);
   }
   /*const ingred1 = ingredForm.querySelector('input[id="ingredient-1"]').value;
   const ingred2 = ingredForm.querySelector('input[id="ingredient-2"]').value;
@@ -88,7 +101,7 @@ ingredForm?.addEventListener('submit', function(e) {
   sessionStorage.setItem('ingred2', ingred2);
   sessionStorage.setItem('ingred3', ingred3);
   sessionStorage.setItem('ingred4', ingred4);*/
-  search(e, ingredients);
+  search(e);
 });
 
 document.addEventListener("click", function(e){
@@ -100,18 +113,9 @@ document.addEventListener("click", function(e){
     showRecipe(e, document.getElementsByClassName(e.target.className)[0].closest(".item").id);
   } else if (e.target && e.target.id == "results-link") {
     e.target.style.color = "purple";
-    const ingredients = [];
-    for (let i = 0; i < sessionStorage.getItem('num_ingred'); i++) {
-      ingredients.push(sessionStorage.getItem('ingred' + i));
-    }
-    /*let ingred1 = sessionStorage.getItem('ingred1');
-    let ingred2 = sessionStorage.getItem('ingred2');
-    let ingred3 = sessionStorage.getItem('ingred3');
-    let ingred4 = sessionStorage.getItem('ingred4');*/
-    search(e, ingredients);
+    search(e);
   } else if (e.target && e.target.id == "add-ingredient") {
     const ingred_arr = document.getElementsByClassName("ingredient");
-    console.log(ingred_arr[4]);
     const new_ingred = document.createElement("input");
     new_ingred.type = "text";
     new_ingred.className = "ingredient";
@@ -119,6 +123,65 @@ document.addEventListener("click", function(e){
     new_ingred.placeholder = "ingredient " + (ingred_arr.length + 1);
     ingred_arr[ingred_arr.length - 1].insertAdjacentElement("afterend", new_ingred);
     ingred_arr[ingred_arr.length - 2].insertAdjacentHTML("afterend", "<br><br>");
+  } else if (e.target && e.target.id == "search-by-recipe-name") {
+    let recipe_name = document.getElementById("recipe-name");
+    if (typeof(recipe_name) == 'undefined' || recipe_name == null) {
+      // If searching by recipe name, remove ingredients list & add recipe name box
+      // Remove ingredients list
+      const ingred_len = document.getElementsByClassName("ingredient").length;
+      for (let i = 0; i < ingred_len; i++) {
+        document.getElementById("ingredient-" + (i + 1))?.remove();
+      }
+      document.getElementById("add-ingredient")?.remove();
+      //console.log(document.getElementsByTagName("br").length);
+      const break_arr = document.getElementsByClassName("ingred-break");
+      const break_arr_len = break_arr.length;
+      for (let i = 0; i < break_arr_len; i++) {
+        break_arr[0].remove();
+      }
+
+      // Add recipe name box
+      recipe_name = document.createElement("input");
+      recipe_name.type = "text";
+      recipe_name.id = "recipe-name";
+      recipe_name.placeholder = "recipe name";
+      document.getElementById("search-by-recipe-name").insertAdjacentElement("afterend", recipe_name);
+      document.getElementById("search-by-recipe-name").insertAdjacentHTML("afterend", "<br class=\"name-break\"><br class=\"name-break\">");
+      document.getElementById("recipe-name").insertAdjacentHTML("afterend", "<br class=\"name-break\"><br class=\"name-break\">");
+      sessionStorage.setItem('search_type', 1);
+    }
+  } else if (e.target && e.target.id == "search-by-ingredients") {
+    // If searching by ingredients, remove recipe name box and add ingredients list
+    const ingred_1 = document.getElementById("ingredient-1");
+    if (typeof(ingred_1) == 'undefined' || ingred_1 == null) {
+      // Remove recipe name box
+      document.getElementById("recipe-name")?.remove();
+      const break_arr = document.getElementsByClassName("name-break");
+      const break_arr_len = break_arr.length;
+      for (let i = 0; i < break_arr_len; i++) {
+        break_arr[0].remove();
+      }
+
+      // Add ingredients list
+      const submit = document.getElementById("submit");
+      submit.insertAdjacentHTML("beforebegin", "<br class=\"ingred-break\"><br class=\"ingred-break\">");
+      for (let i = 0; i < 4; i++) {
+        const new_ingred = document.createElement("input");
+        new_ingred.type = "text";
+        new_ingred.className = "ingredient";
+        new_ingred.id = "ingredient-" + (i + 1);
+        new_ingred.placeholder = "ingredient " + (i + 1);
+        submit.insertAdjacentElement("beforebegin", new_ingred);
+        submit.insertAdjacentHTML("beforebegin", "<br class=\"ingred-break\"><br class=\"ingred-break\">");
+      }
+      const add_ingred = document.createElement("input");
+      add_ingred.type = "button";
+      add_ingred.id = "add-ingredient";
+      add_ingred.value = "+";
+      submit.insertAdjacentElement("beforebegin", add_ingred);
+      submit.insertAdjacentHTML("beforebegin", "<br class=\"ingred-break\"><br class=\"ingred-break\">");
+      sessionStorage.setItem('search_type', 0);
+    }
   }
 });
 
@@ -213,4 +276,5 @@ const showRecipe = function(e, data) {
     console.log(recipe.instructions);*/
   })
 }
-// Add ability to switch between search by ingreds and recipe name
+// Got search by recipe name and ingreds ui working. Now modify api call to use
+// The correct one (currently only does for ingreds)
