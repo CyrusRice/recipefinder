@@ -61,6 +61,9 @@ const search = function(e) {
         //a.href = "#";
         //div.addEventListener('click', showRecipe(e, data.results[i]));
 
+        const divt = document.createElement("div");
+        divt.className = "test test-" + i;
+
         const title = document.createElement("p");
         const text = document.createTextNode(data.results[i].title);
         title.appendChild(text);
@@ -71,7 +74,8 @@ const search = function(e) {
         img.className = "img img-" + i;
 
         div.appendChild(title);
-        div.appendChild(img);
+        divt.appendChild(img);
+        div.appendChild(divt);
 
         container.appendChild(div);
       }
@@ -276,5 +280,4 @@ const showRecipe = function(e, data) {
     console.log(recipe.instructions);*/
   })
 }
-// Got search by recipe name and ingreds ui working. Now modify api call to use
-// The correct one (currently only does for ingreds)
+// Clean up code. Make any new changes that are needed (don't think there are any more?)
