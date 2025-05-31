@@ -3,7 +3,7 @@ body {
 }
 h1 {
   text-align: center;
-  color: blueviolet;
+  color: green;
 }
 p {
   font-style: italic;
@@ -109,7 +109,7 @@ form input[type="submit"]:hover, form input[type="button"]:hover {
 
 .img {
   width: 100%;
-  height: 100%;
+  height: auto;
   aspect-ratio: 16/9;
   object-fit: cover;
   border-bottom-left-radius: 17px;
