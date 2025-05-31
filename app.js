@@ -61,9 +61,6 @@ const search = function(e) {
         //a.href = "#";
         //div.addEventListener('click', showRecipe(e, data.results[i]));
 
-        const divt = document.createElement("div");
-        divt.className = "test test-" + i;
-
         const title = document.createElement("p");
         const text = document.createTextNode(data.results[i].title);
         title.appendChild(text);
@@ -74,8 +71,7 @@ const search = function(e) {
         img.className = "img img-" + i;
 
         div.appendChild(title);
-        divt.appendChild(img);
-        div.appendChild(divt);
+        div.appendChild(img);
 
         container.appendChild(div);
       }
@@ -280,4 +276,5 @@ const showRecipe = function(e, data) {
     console.log(recipe.instructions);*/
   })
 }
-// Clean up code. Make any new changes that are needed (don't think there are any more?)
+// Look at .img (which properties causing problem?) and .item (Grid within grid, has 1 column, maybe issue here?). 
+// Create temp branch to do changes on
