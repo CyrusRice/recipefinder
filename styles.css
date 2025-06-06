@@ -173,4 +173,8 @@ form input[type="submit"]:hover, form input[type="button"]:hover {
   .container {
     grid-template-columns: auto;
   }
+
+  .img {
+    height: auto;
+  }
 }
