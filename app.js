@@ -276,5 +276,4 @@ const showRecipe = function(e, data) {
     console.log(recipe.instructions);*/
   })
 }
-// Look at .img (which properties causing problem?) and .item (Grid within grid, has 1 column, maybe issue here?). 
-// Create temp branch to do changes on
+// Clean up code/comments, Push to main branch, reset main branch as deployer
