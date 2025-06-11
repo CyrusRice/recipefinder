@@ -79,7 +79,7 @@ form input[type="submit"]:hover, form input[type="button"]:hover {
 }
 .images li img{
   max-width: 100%;
-  height: 100%;
+  height: auto;
 }
 
 .container {
