@@ -1,6 +1,7 @@
 const ingredForm = document.forms['ingredients'];
 sessionStorage.setItem('search_type', 0);
 
+// Function called when user clicks to search for a recipe
 const search = function(e) {
   e.preventDefault();
 
@@ -18,15 +19,10 @@ const search = function(e) {
     const recipe_name = sessionStorage.getItem('recipe-name');
     api_call = `titleMatch=${recipe_name}`;
   }
-  //includeIngredients=${ingred1},+${ingred2},+${ingred3},+${ingred4}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6
+
+  // Call Spoonacular API to get recipe information
   $.ajax(`https://api.spoonacular.com/recipes/complexSearch?${api_call}&number=10&instructionsRequired=true&apiKey=64bf1bceb4104664bbdfc0c611b195f6`)
     .then((data) => {
-      //console.log(data.results[0].title);
-      //console.log(data.results[0].image);
-      //console.log(data)
-      //window.location.href = "searchResults.html";
-
-      //document.getElementById("ingredients").style.visibility = "hidden";
       document.getElementById("ingredients")?.remove();
       document.getElementById("description")?.remove();
       document.getElementsByClassName("recipe")[0]?.remove();
@@ -58,8 +54,6 @@ const search = function(e) {
         const div = document.createElement("div");
         div.className = "item item-" + i;
         div.id = data.results[i].id;
-        //a.href = "#";
-        //div.addEventListener('click', showRecipe(e, data.results[i]));
 
         const title = document.createElement("p");
         const text = document.createTextNode(data.results[i].title);
@@ -77,12 +71,10 @@ const search = function(e) {
       }
   })
 }
-const button = document.getElementById("add-ingredient");
-button.addEventListener('click', function(e) {
-  // When add ingred + button clicked, add ingred input to form
-});
 
+// Function called when user hits submit to search for recipes
 ingredForm?.addEventListener('submit', function(e) {
+  // Searching by ingredients vs recipe name
   if (sessionStorage.getItem('search_type') == 0) {
     const ingredients = ingredForm.getElementsByClassName("ingredient");
     sessionStorage.setItem('num_ingred', ingredients.length);
@@ -93,28 +85,21 @@ ingredForm?.addEventListener('submit', function(e) {
     const recipe_name = document.getElementById("recipe-name").value;
     sessionStorage.setItem('recipe-name', recipe_name);
   }
-  /*const ingred1 = ingredForm.querySelector('input[id="ingredient-1"]').value;
-  const ingred2 = ingredForm.querySelector('input[id="ingredient-2"]').value;
-  const ingred3 = ingredForm.querySelector('input[id="ingredient-3"]').value;
-  const ingred4 = ingredForm.querySelector('input[id="ingredient-4"]').value;
-  sessionStorage.setItem('ingred1', ingred1);
-  sessionStorage.setItem('ingred2', ingred2);
-  sessionStorage.setItem('ingred3', ingred3);
-  sessionStorage.setItem('ingred4', ingred4);*/
   search(e);
 });
 
-document.addEventListener("click", function(e){
-  //const target = e.target.closest("#btnPrepend"); // Or any other selector.
-
+// General purpose click event listener to do things when stuff is clicked
+document.addEventListener("click", function(e) {
+  // If recipe picture clicked, show recipe page
   if(e.target && e.target.closest("div.item")) {
     // Do something with `target`.
-    //console.log(document.getElementsByClassName(e.target.className)[0].closest(".item").id);
     showRecipe(e, document.getElementsByClassName(e.target.className)[0].closest(".item").id);
   } else if (e.target && e.target.id == "results-link") {
+    // If clicking results link, go to search results page showing recipes w/ pictures
     e.target.style.color = "purple";
     search(e);
   } else if (e.target && e.target.id == "add-ingredient") {
+    // Clicking add ingredient button
     const ingred_arr = document.getElementsByClassName("ingredient");
     const new_ingred = document.createElement("input");
     new_ingred.type = "text";
@@ -124,6 +109,7 @@ document.addEventListener("click", function(e){
     ingred_arr[ingred_arr.length - 1].insertAdjacentElement("afterend", new_ingred);
     ingred_arr[ingred_arr.length - 2].insertAdjacentHTML("afterend", "<br><br>");
   } else if (e.target && e.target.id == "search-by-recipe-name") {
+    // Clicking search by recipe name button, switch layout to accomodate this
     let recipe_name = document.getElementById("recipe-name");
     if (typeof(recipe_name) == 'undefined' || recipe_name == null) {
       // If searching by recipe name, remove ingredients list & add recipe name box
@@ -133,7 +119,6 @@ document.addEventListener("click", function(e){
         document.getElementById("ingredient-" + (i + 1))?.remove();
       }
       document.getElementById("add-ingredient")?.remove();
-      //console.log(document.getElementsByTagName("br").length);
       const break_arr = document.getElementsByClassName("ingred-break");
       const break_arr_len = break_arr.length;
       for (let i = 0; i < break_arr_len; i++) {
@@ -185,16 +170,15 @@ document.addEventListener("click", function(e){
   }
 });
 
+// Function to show the recipe page when recipe image clicked
 const showRecipe = function(e, data) {
   e.preventDefault();
   document.getElementById("container").remove();
+  // Call Spoonacular API to get recipe ingredients, instructions, and image
   $.ajax(`https://api.spoonacular.com/recipes/${data}/information?apiKey=64bf1bceb4104664bbdfc0c611b195f6`).then((recipe) => {
     const recipe_container = document.createElement("div");
     recipe_container.className = "recipe";
-    //console.log(recipe);
-    //console.log(recipe.extendedIngredients[0].original);
-    //console.log(recipe.instructions);
-    //console.log(recipe.analyzedInstructions[0].steps[0].step);
+
     const recipe_title = document.createElement("p");
     recipe_title.id = "recipe-title";
     const recipe_title_text = document.createTextNode(recipe.title);
@@ -226,13 +210,6 @@ const showRecipe = function(e, data) {
     }
     recipe_container.appendChild(ingred_container);
 
-    //const recipe_instructions = document.createElement("p");
-    //recipe_instructions.id = "recipe-instructions";
-    //const recipe_instructions_text = document.createTextNode(recipe.instructions);
-    //var test = recipe_instructions_text.textContent;
-    //const regex = /<ol>|<\/ol>|<li>|<\/li>/gi;
-    //test = test.replaceAll(regex, "");
-    //const instructions = test.split(".");
     const instruction_title = document.createElement("p");
     const instruction_title_text = document.createTextNode("Instructions");
     instruction_title.appendChild(instruction_title_text);
@@ -249,11 +226,8 @@ const showRecipe = function(e, data) {
       const instruction_text = document.createTextNode(instructions[i].step);
       instruction_div.appendChild(instruction_text);
       instruction_container.appendChild(instruction_div);
-      //recipe_container.appendChild(instruction_div);
     }
     recipe_container.appendChild(instruction_container);
-    //console.log(instructions);
-    //recipe_instructions.appendChild(recipe_instructions_text);
 
     // Link to return back to results
     var results_link = document.getElementById("results-link");
@@ -267,14 +241,5 @@ const showRecipe = function(e, data) {
     }
 
     document.getElementById("home-link").insertAdjacentElement("afterend", recipe_container);
-    /*console.log(recipe.title);
-    console.log(recipe.image);
-    for (let i = 0; i < recipe.extendedIngredients.length; i++) {
-      let currentIngred = recipe.extendedIngredients[i];
-      console.log(currentIngred.nameClean + " (" + currentIngred.amount + " " + currentIngred.unit + ")");
-    }
-    console.log(recipe.instructions);*/
   })
 }
-// Look at .img (which properties causing problem?) and .item (Grid within grid, has 1 column, maybe issue here?). 
-// Create temp branch to do changes on
